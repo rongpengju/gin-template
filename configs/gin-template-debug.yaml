@@ -1,0 +1,35 @@
+# 应用配置
+app:
+  # 应用名称
+  name: "gin-template"
+  # 应用环境
+  env: "debug"
+  # 应用端口
+  port: 8080
+  # 应用接口分页默认值
+  pagination_default_size: 10
+  # 应用接口分页最大值
+  pagination_max_size: 100
+
+# 数据源
+datasource:
+  # mysql 配置
+  mysql:
+    # 链接 dsn
+    dsn_with_default: "username:password@tcp(ip:port)/database?charset=utf8mb4&parseTime=True&loc=Asia%2FShanghai"
+    # 可打开的最大连接数
+    max_open: 1000
+    # 最大空闲连接数
+    max_idle: 100
+    # 连接空闲后在300秒内可复用
+    max_life_time: 300
+  # redis 配置
+  redis:
+    # 链接地址
+    addr: "ip:port"
+    # 密码
+    password: "password"
+    # 链接的数据库
+    db: 1
+    # 链接池大小
+    pool_size: 10
