@@ -8,10 +8,10 @@ import (
 	"github.com/rongpengju/gin-template/pkg/errcode"
 )
 
-// AuthGuid 验证C端用户的 guid
+// AuthGuid 验证C端用户的 uuid
 func AuthGuid() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		guid := c.GetHeader("X-XTJ-UID")
+		guid := c.GetHeader("X-CUSTOM-UUID")
 		if guid == "" {
 			// 返回403状态码
 			tokenInvalidErr := errcode.ErrTokenInvalid
@@ -22,7 +22,7 @@ func AuthGuid() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		c.Set("guid", guid)
+		c.Set("uuid", guid)
 		c.Next()
 	}
 }
@@ -30,7 +30,7 @@ func AuthGuid() gin.HandlerFunc {
 // AuthUserId 验证管理端用户的 id
 func AuthUserId() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		managerId := c.GetHeader("X-User-Id")
+		managerId := c.GetHeader("X-MANAGER-UUID")
 		if managerId == "" {
 			// 返回403状态码
 			tokenInvalidErr := errcode.ErrTokenInvalid

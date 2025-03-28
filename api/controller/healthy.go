@@ -11,5 +11,9 @@ import (
 
 // HealthyCheck k8s 健康服务检查
 func HealthyCheck(c *gin.Context) {
-	app.NewResponse(c).Success(gin.H{"HealthInfo": fmt.Sprintf("%s is healthy", configs.Conf.App.Name)})
+	app.NewResponse(c).Success(
+		gin.H{
+			"health_check_message": fmt.Sprintf("%s is healthy", configs.Conf.App.Name),
+		},
+	)
 }
