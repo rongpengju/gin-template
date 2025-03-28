@@ -4,44 +4,44 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-
 	"github.com/rongpengju/gin-template/pkg/errcode"
 )
 
-// AuthGuid 验证C端用户的 uuid
-func AuthGuid() gin.HandlerFunc {
+// AuthJwtToken 验证 JWT Token
+func AuthJwtToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		guid := c.GetHeader("X-CUSTOM-UUID")
-		if guid == "" {
-			// 返回403状态码
-			tokenInvalidErr := errcode.ErrTokenInvalid
-			c.JSON(http.StatusForbidden, gin.H{
-				"code": tokenInvalidErr.Code(),
-				"msg":  tokenInvalidErr.Msg(),
-			})
-			c.Abort()
-			return
-		}
-		c.Set("uuid", guid)
-		c.Next()
-	}
-}
+		var (
+			authorization   = c.GetHeader("Authorization")
+			tokenInvalidErr = errcode.ErrTokenInvalid
+			ginH            = gin.H{
+				"code":     tokenInvalidErr.Code(),
+				"msg":      tokenInvalidErr.Msg(),
+				"trace_id": c.GetString("trace_id"),
+			}
+		)
 
-// AuthUserId 验证管理端用户的 id
-func AuthUserId() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		managerId := c.GetHeader("X-MANAGER-UUID")
-		if managerId == "" {
-			// 返回403状态码
-			tokenInvalidErr := errcode.ErrTokenInvalid
-			c.JSON(http.StatusForbidden, gin.H{
-				"code": tokenInvalidErr.Code(),
-				"msg":  tokenInvalidErr.Msg(),
-			})
+		if authorization == "" {
+			c.JSON(http.StatusForbidden, ginH)
 			c.Abort()
 			return
 		}
-		c.Set("mid", managerId)
+
+		// 解析 token
+		claims, err := ParseJwtToken(authorization)
+		if err != nil {
+			c.JSON(http.StatusForbidden, ginH)
+			c.Abort()
+			return
+		}
+
+		// 判断 uuid 是否为空
+		if claims.Uuid == "" {
+			c.JSON(http.StatusForbidden, ginH)
+			c.Abort()
+			return
+		}
+
+		c.Set("uuid", claims.Uuid)
 		c.Next()
 	}
 }
