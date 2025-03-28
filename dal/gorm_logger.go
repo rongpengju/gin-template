@@ -20,7 +20,7 @@ type customGormLogger struct {
 
 func newGormLogger() *customGormLogger {
 	return &customGormLogger{
-		SlowThreshold: 500 * time.Millisecond, // 超过500毫秒算慢查询, 如果需要按环境定制化, 这个放到配置文件中
+		SlowThreshold: 500 * time.Millisecond, // 超过500毫秒算慢查询, 如果需要按环境定制化, 请写到配置文件中
 	}
 }
 
